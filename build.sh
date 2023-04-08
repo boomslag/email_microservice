@@ -7,7 +7,6 @@ mkdir -p build/static
 
 # Continue with the rest of the build script
 python -m venv .venv
-source .venv/bin/activate
 pip install --upgrade pip
 pip install -r requirements.txt
 
