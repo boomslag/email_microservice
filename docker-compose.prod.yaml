@@ -3,21 +3,25 @@ services:
   # Django app
   backend_email:
     build: .
-    image: boomslag/auth:0.0.1
-    command: >
-      sh -c "python manage.py runserver 0.0.0.0:8000"
-    ports:
-      - 8000:8000
+    image: boomslag/email:0.0.2
     environment:
-      - DEBUG=False
-      - SECRET_KEY=d1wc#rn+chiehol+wz)t+s2ghxd4kq@_2#d#*t^7lee_z4@!e3
-      - DATABASE_URL=postgres://boomslag_ms_email_postgres_user:vy6QKrrs44mmEXKg9E9HS3iNpXY9ry6t@dpg-cgon5ggu9tun42psgqag-a.oregon-postgres.render.com/boomslag_ms_email_postgres
-      - REDIS_URL=rediss://red-cgon52d269v5rjchi4tg:WhMhCLBKkkrmX8bvjy64x39o0Dct3i2j@oregon-redis.render.com:6379
-      - REDIS_PASSWORD=WhMhCLBKkkrmX8bvjy64x39o0Dct3i2j
-
-  # Event Queue Kafka
-  queue_email:
-    build: .
-    image: boomslag/auth:0.0.1
-    command: >
-      sh -c "python consumer.py"
+      KAFKA_BOOTSTRAP_SERVER: pkc-lgk0v.us-west1.gcp.confluent.cloud:9092
+      KAFKA_USERNAME: TVUGRBPPDON2TY47
+      KAFKA_PASSWORD: 9nePNnuZ5mPu4Z39Tv03Hqgp9WFDCp6iYejZB1OsPkSqSWhMaMWLOF8tMfx0p2Nx
+      KAFKA_TOPIC: email
+      KAFKA_GROUP: email_group
+      KAFKA_SECURITY_PROTOCOL: SASL_SSL
+      SECRET_KEY: d1wc#rn+chiehol+wz)t+s2ghxd4kq@_2#d#*t^7lee_z4@!e3
+      DEBUG: False
+      ALLOWED_HOSTS_DEV: '*'
+      ALLOWED_HOSTS_DEPLOY: .boomslag.com
+      ACTIVE_CAMPAIGN_URL: d354e2c781c48334fb8d4cebeb5d77374d9d5bd23ee6e4707445a159b1ccf5d8b9617288
+      ACTIVE_CAMPAIGN_KEY: https://proton7846.api-us1.com
+      EMAIL_HOST: send.smtp.com
+      EMAIL_HOST_USER: boomslag
+      EMAIL_HOST_PASSWORD: "#E@Ap#961"
+      EMAIL_PORT: 25
+      EMAIL_USE_TLS: True
+      AWS_ACCESS_KEY_ID: AKIAXOJ6AFD64MVGJSHI
+      AWS_SECRET_ACCESS_KEY: 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
+      AWS_STORAGE_BUCKET_NAME: boomslagemail

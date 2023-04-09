@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   # Django app
-  email_backend:
+  backend_email:
     container_name: boomslag_ms_email
     build: .
     command: >
@@ -10,31 +10,29 @@ services:
       - .:/app
     ports:
       - 8001:8001
-    depends_on:
-      - db_email
+    environment:
+      KAFKA_BOOTSTRAP_SERVER: pkc-lgk0v.us-west1.gcp.confluent.cloud:9092
+      KAFKA_USERNAME: TVUGRBPPDON2TY47
+      KAFKA_PASSWORD: 9nePNnuZ5mPu4Z39Tv03Hqgp9WFDCp6iYejZB1OsPkSqSWhMaMWLOF8tMfx0p2Nx
+      KAFKA_TOPIC: email
+      KAFKA_GROUP: email_group
+      KAFKA_SECURITY_PROTOCOL: SASL_SSL
+      SECRET_KEY: d1wc#rn+chiehol+wz)t+s2ghxd4kq@_2#d#*t^7lee_z4@!e3
+      DEBUG: False
+      ALLOWED_HOSTS_DEV: '*'
+      ALLOWED_HOSTS_DEPLOY: .boomslag.com
+      ACTIVE_CAMPAIGN_URL: d354e2c781c48334fb8d4cebeb5d77374d9d5bd23ee6e4707445a159b1ccf5d8b9617288
+      ACTIVE_CAMPAIGN_KEY: https://proton7846.api-us1.com
+      EMAIL_HOST: send.smtp.com
+      EMAIL_HOST_USER: boomslag
+      EMAIL_HOST_PASSWORD: "#E@Ap#961"
+      EMAIL_PORT: 25
+      EMAIL_USE_TLS: True
+      AWS_ACCESS_KEY_ID: AKIAXOJ6AFD64MVGJSHI
+      AWS_SECRET_ACCESS_KEY: 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
+      AWS_STORAGE_BUCKET_NAME: boomslagemail
   # Event Queue Kafka
-  email_queue:
+  queue_email:
     build: .
     command: >
       sh -c "python consumer.py"
-    depends_on:
-      - db_email
-  # Database (PostgreSQL)
-  db_email:
-    image: postgres
-    container_name: django_email_api_postgresql
-    restart: always
-    environment:
-      POSTGRES_DB: boomslag_email_db
-      POSTGRES_USER: boomslag
-      POSTGRES_PASSWORD: postgres
-    ports:
-      - 5434:5432
-    volumes:
-      - .dbdata:/var/lib/postgresql
-  # Redis Cache
-  redis:
-    image: redis
-    container_name: django_email_api_redis
-    ports:
-      - 6381:6379

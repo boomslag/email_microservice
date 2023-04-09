@@ -9,14 +9,14 @@ from django.apps import apps
 
 consumer = Consumer({
     'bootstrap.servers': os.environ.get('KAFKA_BOOTSTRAP_SERVER'),
-    'security.protocol': 'SASL_SSL',
-    'sasl.username': os.environ.get('KAFKA_USERNAME'),
+    'security.protocol': os.environ.get('KAFKA_SECURITY_PROTOCOL'),
+    'sasl.username': os.environ.get('KAFKA_USERNAME'), 
     'sasl.password': os.environ.get('KAFKA_PASSWORD'),
     'sasl.mechanism': 'PLAIN',
-    'group.id': 'email_group',
+    'group.id': os.environ.get('KAFKA_GROUP'),
     'auto.offset.reset': 'earliest'
 })
-consumer.subscribe(['email'])
+consumer.subscribe([os.environ.get('KAFKA_TOPIC')])
 
 while True:
     msg = consumer.poll(1.0)
