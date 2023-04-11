@@ -1,4 +1,3 @@
-print("Starting consumer...")
 import os, django
 from confluent_kafka import Consumer
 
