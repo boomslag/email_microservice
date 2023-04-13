@@ -11,6 +11,8 @@ EmailList = apps.get_model('automation', 'EmailList')
 ContactEmailList = apps.get_model('automation', 'ContactEmailList')
 EmailTemplate = apps.get_model('automation', 'EmailTemplate')
 EmailCampaign = apps.get_model('automation', 'EmailCampaign')
+Segment = apps.get_model('automation', 'Segment')
+Tag = apps.get_model('automation', 'Tag')
 
 consumer1 = Consumer({
     'bootstrap.servers': os.environ.get('KAFKA_BOOTSTRAP_SERVER'),
@@ -45,8 +47,29 @@ while True:
 
                 if created:
                     # Add the new contact to the specified EmailList
-                    email_list = EmailList.objects.get(pk=1)  # Replace 1 with the desired EmailList ID
+                    email_list = EmailList.objects.get(pk=1)
                     contact_email_list = ContactEmailList(contact=contact, email_list=email_list)
                     contact_email_list.save()
+
+                    # Create or get the desired Tag
+                    tag, created = Tag.objects.get_or_create(
+                        name='new_user',  # Replace 'new_user' with the desired Tag name
+                        defaults={'description': 'New users who agreed to receive marketing emails'}
+                    )
+
+                    # Add the Tag to the Contact
+                    contact.tags.add(tag)
+
+                    # Create or get the desired Segment
+                    segment, created = Segment.objects.get_or_create(
+                        name='new_users_segment',  # Replace 'new_users_segment' with the desired Segment name
+                        defaults={
+                            'description': 'Segment of new users who agreed to receive marketing emails',
+                            'email_list': email_list
+                        }
+                    )
+
+                    # Add the Tag to the Segment
+                    segment.tags.add(tag)
 
 consumer1.close()
